@@ -1,0 +1,61 @@
+function [Output] = extract_character(BWe)
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%extract character takes a balck and white image that contains one black
+%character on a white background. The function will find the black
+%haracters outermost edge points and use them to create a reactangler image
+%that contains only the character. This new image will be passed back. 
+%    Paul chambers 10/05/2015
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% [fileName, pathName] = uigetfile('*.bmp; *.jpg; Pick and image file');
+% BWe = imread([pathName,fileName]);
+% BWe = im2bw(BWe);
+BWe = im2double(BWe);
+
+[H,W] = size(BWe);
+char_top=1000;
+char_left=1000;
+char_bottem=0;
+char_right=0;
+
+%collects the most top,bottem, left and right black points.  
+for i=1:H 
+    for j=1:W
+        if BWe(i,j) == 0
+            if (i<char_top)
+                char_top=i;
+            elseif (j<char_left)
+                char_left=j;
+            elseif (i>char_bottem)
+                char_bottem=i;
+            elseif (j>char_right)
+                char_right=j;
+            end
+        end     
+    end
+end
+
+%initializes the size of Output
+width = char_right - char_left;
+hight = char_bottem - char_top;
+Output = ones([hight width]);
+
+%why does this not work?
+Output = BWe(char_top:char_bottem, char_left:char_right);
+
+%sets Output equal to just the character
+% for a=char_top:char_bottem
+%     for b=char_left:char_right
+%         Output(a-(char_top-1),b-(char_left-1)) = BWe(a,b);
+%     end
+% end
+%invert char to match OCR character colour layout
+Output = 1 - Output;
+ 
+% Scale image to approprate size
+Output = imresize(Output, [42 24]);
+Output = im2bw(Output);
+
