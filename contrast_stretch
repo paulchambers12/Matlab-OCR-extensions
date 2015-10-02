@@ -1,0 +1,49 @@
+function [Output] = contrast_stretch(cont_strch_input)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%paul chambers 18/04/2015
+%aim: Process the attached file to create a binary image in which the text
+%is clearly legible. Use contrast stretching techniques. Ensure
+%that the algorithm is as automated as possable and can work on other
+%equivalent (uneven lighting) images. Paul Chambers. 
+%When run, the code will open up a window for the user to select a .bmp or
+%a .jpg image file to be streched. Once seleted the size of the image is
+%measured and used to determine the size of the comparason box for 
+%strecing. Ch and Cw are the hight and width of the comparason box.
+%Once the hight and width are found the Output image is created. The for
+%loops go through the image, only limited so that the comparason box does
+%not try to take samples form outside the image. All the brightness values
+%in the comparason box are collected into C and then summed together. This
+%summed vales is adjusted to be lowered slightly and that made as the
+%threshold for the current pixel. If the current pixel is brighter then the
+%threshold it' brightness is incremented, if not then the brightness is
+%decromented. Once complete the Input image is desplayed with the output
+%image.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+cont_strch_input = im2double(cont_strch_input);
+
+[H,W] = size(cont_strch_input);
+
+
+%dynamic comparaon box values adjust to the size of the input image
+Ch = floor(H * 0.02);
+Cw = floor(W * 0.02);
+
+HalfH = floor(Ch/2);
+HalfW = floor(Cw/2);
+Output = cont_strch_input;
+
+for i=HalfH+1:H-HalfH-1 
+    for j=HalfW+1:W-HalfW-1
+        C = cont_strch_input(i-HalfH : i+HalfH, j-HalfW:j+HalfW); 
+        threshold = mean(C(:));
+        threshold = threshold * 0.95;
+        if cont_strch_input(i,j) < (threshold)
+            Output(i,j) = Output(i,j) - 0.1;
+        else
+            Output(i,j) = Output(i,j) + 0.1;
+        end
+    end
+end
+
+end
