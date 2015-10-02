@@ -1,0 +1,25 @@
+
+word = 'none';%may be changed for other fonts
+character = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',...
+    'l', 'm', 'n', 'o', 'p', 'q', 'r','s', 't', 'u', 'v', 'w', 'x',...
+    'y', 'z'];
+thing = length(character);
+for number=1:thing
+    
+    ah = annotation('textbox', [0.5 0.5 0.1 0.1], 'string',character(number),'linestyle',word, 'FontSize', 48);
+
+%     figure(1),
+    
+    im = getframe(gcf);
+    
+    test_character = my_adaptive_thresholding(im.cdata);
+    test_character = bwareaopen(test_character,20);
+    
+    test_character = extract_character(test_character);
+%     name = character(number);
+    name = strcat('0', character(number));
+    imwrite(test_character, [name '.bmp']);
+    close all
+    
+    
+end
